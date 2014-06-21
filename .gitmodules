@@ -1,0 +1,6 @@
+[submodule "submodules/biopython"]
+	path = submodules/biopython
+	url = git@github.com:biopython/biopython.git
+[submodule "submodules/PyVCF"]
+	path = submodules/PyVCF
+	url = git@github.com:jamescasbon/PyVCF.git
