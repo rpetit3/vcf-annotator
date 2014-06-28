@@ -1,0 +1,109 @@
+LOCUS       NC_013774               1767 bp    DNA     circular VRL 03-FEB-2011
+DEFINITION  Porcine circovirus type 1/2a, complete genome.
+ACCESSION   NC_013774
+VERSION     NC_013774.1  GI:289163350
+DBLINK      BioProject: PRJNA45807
+KEYWORDS    RefSeq.
+SOURCE      Porcine circovirus type 1/2a
+  ORGANISM  Porcine circovirus type 1/2a
+            Viruses; ssDNA viruses; Circoviridae; Circovirus; unclassified
+            Circovirus.
+REFERENCE   1  (bases 1 to 1767)
+  AUTHORS   Gagnon,C.A., Music,N., Fontaine,G., Tremblay,D. and Harel,J.
+  TITLE     Emergence of a new type of porcine circovirus in swine (PCV): a
+            type 1 and type 2 PCV recombinant
+  JOURNAL   Vet. Microbiol. 144 (1-2), 18-23 (2010)
+   PUBMED   20097492
+REFERENCE   2  (bases 1 to 1767)
+  CONSRTM   NCBI Genome Project
+  TITLE     Direct Submission
+  JOURNAL   Submitted (18-FEB-2010) National Center for Biotechnology
+            Information, NIH, Bethesda, MD 20894, USA
+REFERENCE   3  (bases 1 to 1767)
+  AUTHORS   Tremblay,D., Fontaine,G., Music,N., Harel,J. and Gagnon,C.A.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (22-JAN-2009) Faculte de Medecine Veterinaire, Universite
+            de Montreal, 3200 rue Sicotte, St-Hyacinthe, Quebec J2S 7C6, Canada
+COMMENT     PROVISIONAL REFSEQ: This record has not yet been subject to final
+            NCBI review. The reference sequence is identical to FJ655418.
+            COMPLETENESS: full length.
+FEATURES             Location/Qualifiers
+     source          1..1767
+                     /organism="Porcine circovirus type 1/2a"
+                     /mol_type="genomic DNA"
+                     /isolate="FMV08-1114252"
+                     /host="Sus scrofa"
+                     /db_xref="taxon:720569"
+                     /country="Canada"
+                     /collection_date="Sep-2008"
+                     /type="PCV-1/2a"
+     gene            47..985
+                     /gene="rep"
+                     /locus_tag="PCV3p1"
+                     /db_xref="GeneID:8764679"
+     CDS             47..985
+                     /gene="rep"
+                     /locus_tag="PCV3p1"
+                     /note="ORF1"
+                     /codon_start=1
+                     /product="replicase"
+                     /protein_id="YP_003422530.1"
+                     /db_xref="GI:289163351"
+                     /db_xref="GeneID:8764679"
+                     /translation="MPSRKSGPQPHKRWVFTLNNPSEEEKNKIRELPISLFDYFVCGE
+                     EGLEEGRTPHLQGFANFAKKQTFNKVKWYFGARCHIEKAKGTDQQNKEYCSKEGHILI
+                     ECGAPRNQGKRSDLSTAVSTLLETGSLVTVAEQFPVTYVRNFRGLAELLKVSGKMQQR
+                     DWKTAVHVIVGPPGCGKSQWARNFAEPSDTYWKPSRNKWWDGYHGEEVVVLDDFYGWL
+                     PWDDLLRLCDRYPLTVETKGGTVPFLARSILITSNQAPQEWYSSTAVPAVEALYRRIT
+                     TLQFWKTAGEQSTEVPEGRFEAVDPPCALFPYKINY"
+     gene            complement(1030..1731)
+                     /gene="cap"
+                     /locus_tag="PCV3p2"
+                     /db_xref="GeneID:8764678"
+     CDS             complement(1030..1731)
+                     /gene="cap"
+                     /locus_tag="PCV3p2"
+                     /note="ORF2"
+                     /codon_start=1
+                     /product="capsid protein"
+                     /protein_id="YP_003422531.1"
+                     /db_xref="GI:289163352"
+                     /db_xref="GeneID:8764678"
+                     /translation="MTYPRRRYRRRRHRPRSHLGQILRRRPWLVHPRHRYRWRRKNGI
+                     FNTRLSRTFGYTVKATTVRTPSWAVDMMRFNIDDFVPPGGGTNKISIPFEYYRIRKVK
+                     VEFWPCSPITQGDRGVGSTAVILDDNFVTKATALTYDPYVNYSSRHTIPQPFSYHSRY
+                     FTPKPVLDSTIDYFQPNNKRNQLWMRLQTSRNVDHVGLGTAFENSIYDQDYNIRVTMY
+                     VQFREFNLKDPPLKP"
+ORIGIN      
+        1 accagcgcac ttcggcagcg gcagcacctc ggcagcgtca gtgaaaatgc caagcaggaa
+       61 aagcggcccg caaccccata agaggtgggt gttcaccctt aataatcctt ccgaggagga
+      121 gaaaaacaaa atacgggagc ttccaatctc cctttttgat tattttgttt gcggagagga
+      181 aggtttggaa gagggtagaa ctcctcacct ccaggggttt gcgaattttg ctaagaagca
+      241 gacttttaac aaggtgaagt ggtattttgg tgcccgctgc cacatcgaga aagcgaaagg
+      301 aaccgaccag cagaataaag aatactgcag taaagaaggc cacatactta tcgagtgtgg
+      361 agctccgcgg aaccagggga agcgcagcga cctgtctact gctgtgagta cccttttgga
+      421 gacggggtct ttggtgactg tagccgagca gttccctgta acgtatgtga gaaatttccg
+      481 cgggctggct gaacttttga aagtgagcgg gaagatgcag cagcgtgatt ggaagacagc
+      541 tgtacacgtc atagtgggcc cgcccggttg tgggaagagc cagtgggccc gtaattttgc
+      601 tgagcctagc gacacctact ggaagcctag tagaaataag tggtgggatg gatatcatgg
+      661 agaagaagtt gttgttttgg atgattttta tggctggtta ccttgggatg atctactgag
+      721 actgtgtgac cggtatccat tgactgtaga gactaaaggg ggtactgttc cttttttggc
+      781 ccgcagtatt ttgattacca gcaatcaggc cccccaggaa tggtactcct caactgctgt
+      841 cccagctgta gaagctctct atcggaggat tactactttg caattttgga agactgctgg
+      901 agaacaatcc acggaggtac ccgaaggccg atttgaagca gtggacccac cctgtgccct
+      961 tttcccatat aaaataaatt actgagtctt ttttgttatc acatcgtaat ggtttttatt
+     1021 tttattcatt tagggtttaa gtggggggtc tttaagatta aattctctga attgtacata
+     1081 catggttaca cggatattgt agtcctggtc gtatatactg ttttcgaacg cagtgccgag
+     1141 gcctacgtgg tccacatttc tagaggtttg tagcctcatc caaagctgat tccttttgtt
+     1201 atttggttgg aagtaatcaa tggtggagtc aagaacaggt ttgggtgtga agtaacggga
+     1261 gtggtaggag aagggttggg ggattgtatg gcgggaggag tagtttacat atgggtcata
+     1321 ggttagggct gtggcctttg ttacaaagtt atcatctaga ataacagcag tggagcccac
+     1381 tcccctatca ccctgggtga tgggggagca gggccagaat tcaaccttaa cctttcttat
+     1441 tctgtagtat tcaaagggta tagagatttt gttggtcccc cctcccgggg gaacaaagtc
+     1501 gtcaatatta aatctcatca tgtccaccgc ccaggagggc gttctgactg tggtagcctt
+     1561 gacagtatat ccgaaggtgc gggagaggcg ggtgttgaag atgccatttt tccttctcca
+     1621 acggtagcgg tggcgggggt ggacgagcca ggggcggcgg cggaggatct ggccaagatg
+     1681 gctgcggggg cggtgtcttc ttctgcggta acgcctcctt ggatacgtca tcctataaaa
+     1741 gtgaaagaag tgcgctgctg tagtatt
+//
+

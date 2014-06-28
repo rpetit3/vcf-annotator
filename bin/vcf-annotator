@@ -39,3 +39,4 @@ if __name__ == '__main__':
         sys.exit(1)
     
     annotator = annotator.Annotator(gb_file=args.gb, vcf_file=args.vcf)
+    annotator.annotate_vcf_records()
