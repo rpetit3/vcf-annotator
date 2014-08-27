@@ -26,12 +26,12 @@ class GenBank(object):
                 end = int(self.__gb.features[i].location.end)
                 self.__position_index[start:end] = [i] * (end - start)
                 
-    def annotation_by_position(self):
+    def feature_exists(self):
         if self._index is None:
-            return ['Intergenic', None, None]
+            return False
         else:
             self.feature = self.__gb.features[self._index]
-            return [self.feature.strand, self.feature.qualifiers['locus_tag'], self.feature.qualifiers['product']]
+            return True
 
     def codon_by_position(self, pos): 
         if self._index not in self.gene_codons: self.split_into_codons()   
@@ -53,4 +53,9 @@ class GenBank(object):
         
     def base_by_pos(self, pos):
         print self.__gb.seq[pos-1]
+        
+    def get_flanking_region(self, length):
+        start = 0 if pos-1-length < 0 else pos-1-length
+        end = self.__gb.length if pos-1+length > self.__gb.length else pos-1+length
+        return self.__gb.seq[start:end]
 
