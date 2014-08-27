@@ -10,16 +10,21 @@ if __name__ == '__main__':
     import sys
     from vcfannotator import annotator
     
-    parser = ap.ArgumentParser(prog='vcf-annotator.py', 
-                               conflict_handler='resolve', 
-                               description="".join(["Annotate SNPs from a VCF",
-                                                   " file using the reference",
-                                                   " genome's GenBank file."]))
+    parser = ap.ArgumentParser(
+        prog='vcf-annotator.py', 
+        conflict_handler='resolve', 
+        description="".join(["Annotate SNPs from a VCF file using the ",
+                             "reference genome's GenBank file."])
+    )
     group1 = parser.add_argument_group('Options', '')
     group1.add_argument('--gb', metavar="STRING", type=str, required=True,
                         help='GenBank file of the reference genome.')
     group1.add_argument('--vcf', metavar="STRING", type=str, required=True,
                         help='VCF file of SNPs')
+    group1.add_argument(
+        '--length', metavar="INT", type=int, default=15,
+        help='Upstream and downstream length to return. (Default 15bp)'
+    )
     group1.add_argument('-h', '--help', action='help', 
                         help='Show this help message and exit')
    
@@ -38,5 +43,6 @@ if __name__ == '__main__':
         parser.print_usage()
         sys.exit(1)
     
-    annotator = annotator.Annotator(gb_file=args.gb, vcf_file=args.vcf)
+    annotator = annotator.Annotator(gb_file=args.gb, vcf_file=args.vcf, 
+                                    length=args.length)
     annotator.annotate_vcf_records()
