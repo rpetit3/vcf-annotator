@@ -16,7 +16,7 @@ class GenBank(object):
     @index.setter
     def index(self, value):
         self._index = self.__position_index[value-1]
-        self.feature = None
+        self.__set_feature()
         
     def build_position_index(self):
         self.__position_index = [None] * len(self.__gb.seq)
@@ -26,12 +26,13 @@ class GenBank(object):
                 end = int(self.__gb.features[i].location.end)
                 self.__position_index[start:end] = [i] * (end - start)
                 
-    def feature_exists(self):
+    def __set_feature(self):
         if self._index is None:
-            return False
+            self.feature_exists = False
+            self.feature = None
         else:
+            self.feature_exists = True
             self.feature = self.__gb.features[self._index]
-            return True
 
     def codon_by_position(self, pos): 
         if self._index not in self.gene_codons: self.split_into_codons()   
@@ -54,8 +55,16 @@ class GenBank(object):
     def base_by_pos(self, pos):
         print self.__gb.seq[pos-1]
         
-    def get_flanking_region(self, length):
-        start = 0 if pos-1-length < 0 else pos-1-length
-        end = self.__gb.length if pos-1+length > self.__gb.length else pos-1+length
-        return self.__gb.seq[start:end]
+    def get_flanking_region(self, alt_base, pos, length):
+        
+        genome_length = len(self.__gb.seq)
+        start = pos-length-1
+        end = pos+length
+        start = 0 if start < 0 else start
+        end = genome_length if end > genome_length else end
+        return '{0}{1}{2}'.format(
+            self.__gb.seq[start:pos-1],
+            str(alt_base).lower(),
+            self.__gb.seq[pos:end]
+        )
 

@@ -46,3 +46,4 @@ if __name__ == '__main__':
     annotator = annotator.Annotator(gb_file=args.gb, vcf_file=args.vcf, 
                                     length=args.length)
     annotator.annotate_vcf_records()
+    annotator.write_vcf()

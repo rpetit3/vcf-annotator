@@ -1,14 +1,14 @@
 from vcfannotator import genbank
 from vcfannotator import vcftools
 from Bio.Seq import Seq
+import vcf
+
 
 class Annotator(object):
     def __init__(self, gb_file=False, vcf_file=False, length=15):
         self.length = length
         self.__gb = genbank.GenBank(gb_file)
         self.__vcf = vcftools.VCFTools(vcf_file)
-        #self.__gb.base_by_pos(1731)
-        #self.__gb.base_by_pos(1732)
         self.add_annotation_info()
        
     def add_annotation_info(self):
@@ -21,7 +21,7 @@ class Annotator(object):
             ['SNPCodonPosition', '1', 'Integer', 'SNP position in the codon'],
             ['AminoAcidChange', None, 'String', 'Amino acid change'],
             ['Substitution', '1', 'Integer', '0:synonymous, 1:nonsynonymous'],
-            ['IsGenic', '1', 'Integer', '0:Intergenic, 1:Genic'],
+            ['IsGenic', '1', 'Integer', '0:intergenic, 1:genic'],
             ['LocusTag', None, 'String', 'Locus tag associated with gene'],
             ['DBXref', None, 'String', 'Database ids associated with gene'],
             ['Gene', None, 'String', 'Name of gene'],
@@ -33,13 +33,6 @@ class Annotator(object):
             ['VariantType', None, 'String', "Indel, SNP, Multiple SNPs"],
         ])
         
-    def print_vcf():
-        self.__vcf.print_metadata()
-        self.__vcf.print_filter()
-        self.__vcf.print_format()
-        self.__vcf.print_info()
-        self.__vcf.print_contigs()
-
     def annotate_vcf_records(self):
         for record in self.__vcf.records:
             self.__gb.index = record.POS
@@ -61,11 +54,11 @@ class Annotator(object):
             record.INFO['Note'] = '.'
             record.INFO['Product'] = '.'
             record.INFO['ProteinID'] = '.'
-            record.INFO['FlankingRegion'] = self.__gb.get_flanking_region(self.length)
-            
+            record.INFO['FlankingRegion'] = '.'
+
             # Get annotation info
-            feature = self.__gb.feature
-            if self.__gb.feature_exists():
+            if self.__gb.feature_exists:
+                feature = self.__gb.feature
                 record.INFO['IsGenic'] = '1'
                 record.INFO['LocusTag'] = feature.qualifiers['locus_tag']
                 record.INFO['DBXref'] = feature.qualifiers['db_xref']
@@ -76,24 +69,49 @@ class Annotator(object):
 
             # Determine variant type
             if len(record.ALT) > 1:
-                record.INFO['VariantType'] = 'Multiple SNPs'
+                record.INFO['VariantType'] = 'Multiple_SNPs'
             elif len(record.ALT[0]) > 1 or len(record.REF) > 1:
                 record.INFO['VariantType'] = 'Indel'
             else:
                 record.INFO['VariantType'] = 'SNP'
                 if int(record.INFO['IsGenic']):
-                    codon_info = self.__gb.codon_by_position(record.POS)
-                    if feature.strand == -1:
-                        record.REF = Seq(str(record.REF)).complement()
-                        record.ALT[0] = Seq(str(record.ALT[0])).complement()
-                    alt_codon = list(codon_info[0])
-                    alt_codon[codon_info[1]] = str(record.ALT[0])
-                    ref_aa = codon_info[0].translate()
-                    alt_aa = Seq(''.join(alt_codon)).translate()
-                    
-            
-                    print '{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}{7}{8}'.format(
-                        record.POS, record.REF, record.ALT, codon_info[0], 
-                        ''.join(alt_codon), codon_info[1], ref_aa, 
-                        codon_info[2], alt_aa
+                    alt_base = str(record.ALT[0])
+                    ref_base = str(record.REF)
+                    record.INFO['FlankingRegion'] = self.__gb.get_flanking_region(
+                        record.ALT[0], record.POS, self.length
                     )
+                    
+                    #Determine codon information
+                    codon = self.__gb.codon_by_position(record.POS)
+                    record.INFO['RefCodon'] = codon[0]
+                    record.INFO['SNPCodonPosition'] = codon[1]
+                    record.INFO['CodonPosition'] = codon[2]
+                    
+                    # Adjust for negative strand
+                    if feature.strand == -1:
+                        alt_base = str(Seq(str(record.ALT[0])).complement())
+                        record.INFO['FlankingRegion'] = Seq(record.INFO['FlankingRegion']).reverse_complement()
+                        record.INFO['Comments'] = 'Negative {0} -> {1}'.format(
+                            Seq(record.REF).complement(), 
+                            Seq(str(record.ALT[0])).complement()
+                        )
+                        
+                    # Determine alternates
+                    record.INFO['AltCodon'] = list(record.INFO['RefCodon'])
+                    record.INFO['AltCodon'][record.INFO['SNPCodonPosition']] = alt_base
+                    record.INFO['AltCodon'] = ''.join(record.INFO['AltCodon'])
+                    record.INFO['RefAminoAcid'] = record.INFO['RefCodon'].translate()
+                    record.INFO['AltAminoAcid'] = Seq(record.INFO['AltCodon']).translate()
+                    record.INFO['AminoAcidChange'] = '{0}{1}{2}'.format(
+                        str(record.INFO['RefAminoAcid']),
+                        record.INFO['CodonPosition'],
+                        str(record.INFO['AltAminoAcid'])
+                    )
+                    
+                    if str(record.INFO['RefAminoAcid']) == str(record.INFO['AltAminoAcid']):
+                        record.INFO['Substitution'] = 'SYN'
+                    else:
+                        record.INFO['Substitution'] = 'nSYN'
+                        
+    def write_vcf(self):
+        self.__vcf.write_vcf()
