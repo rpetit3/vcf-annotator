@@ -60,12 +60,13 @@ class Annotator(object):
             if self.__gb.feature_exists:
                 feature = self.__gb.feature
                 record.INFO['IsGenic'] = '1'
-                record.INFO['LocusTag'] = feature.qualifiers['locus_tag']
-                record.INFO['DBXref'] = feature.qualifiers['db_xref']
-                record.INFO['Gene'] = feature.qualifiers['gene']
-                record.INFO['Note'] = feature.qualifiers['note']
-                record.INFO['Product'] = feature.qualifiers['product']
-                record.INFO['ProteinID'] = feature.qualifiers['protein_id']
+                qualifiers = {
+                    'Note':'note', 'LocusTag':'locus_tag', 'DBXref':'db_xref',
+                    'Gene':'gene', 'Product':'product', 'ProteinID':'protein_id'
+                }
+                for k,v in qualifiers.items():
+                    if v in feature.qualifiers:
+                        record.INFO[k] = feature.qualifiers[v]
 
             # Determine variant type
             if len(record.ALT) > 1:
