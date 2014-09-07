@@ -1,6 +1,7 @@
 from vcfannotator import genbank
 from vcfannotator import vcftools
 from Bio.Seq import Seq
+from Bio.Alphabet import IUPAC
 import vcf
 
 
@@ -20,7 +21,10 @@ class Annotator(object):
             ['CodonPosition', '1', 'Integer', 'Codon position in the gene'],
             ['SNPCodonPosition', '1', 'Integer', 'SNP position in the codon'],
             ['AminoAcidChange', None, 'String', 'Amino acid change'],
-            ['Substitution', '1', 'Integer', '0:synonymous, 1:nonsynonymous'],
+            ['IsSynonymous', '1', 'Integer', 
+             '0:nonsynonymous, 1:synonymous, 9:N/A or Unknown'],
+            ['IsTransition', '1', 'Integer', 
+             '0:transversion, 1:transition, 9:N/A or Unknown'],
             ['IsGenic', '1', 'Integer', '0:intergenic, 1:genic'],
             ['LocusTag', None, 'String', 'Locus tag associated with gene'],
             ['DBXref', None, 'String', 'Database ids associated with gene'],
@@ -29,8 +33,7 @@ class Annotator(object):
             ['Product', None, 'String', 'Description of gene'],
             ['ProteinID', None, 'String', 'Protein ID of gene'],
             ['Comments', None, 'String', 'Example: Negative strand: T->C'],
-            ['FlankingRegion', None, 'String', "Sequence of flanking region"],
-            ['VariantType', None, 'String', "Indel, SNP, Multiple SNPs"],
+            ['VariantType', None, 'String', 'Indel, SNP, Ambiguous_SNP'],
         ])
         
     def annotate_vcf_records(self):
@@ -45,7 +48,8 @@ class Annotator(object):
             record.INFO['CodonPosition'] = '.'
             record.INFO['SNPCodonPosition'] = '.'
             record.INFO['AminoAcidChange'] = '.'
-            record.INFO['Substitution'] = '.'
+            record.INFO['IsSynonymous'] = 9
+            record.INFO['IsTransition'] = 9
             record.INFO['Comments'] = '.'
             record.INFO['IsGenic'] = '0'
             record.INFO['LocusTag'] = '.'
@@ -54,7 +58,6 @@ class Annotator(object):
             record.INFO['Note'] = '.'
             record.INFO['Product'] = '.'
             record.INFO['ProteinID'] = '.'
-            record.INFO['FlankingRegion'] = '.'
 
             # Get annotation info
             if self.__gb.feature_exists:
@@ -69,50 +72,67 @@ class Annotator(object):
                         record.INFO[k] = feature.qualifiers[v]
 
             # Determine variant type
-            if len(record.ALT) > 1:
-                record.INFO['VariantType'] = 'Multiple_SNPs'
-            elif len(record.ALT[0]) > 1 or len(record.REF) > 1:
+            #if len(record.ALT) > 1:
+            #    self.__gb.determine_iupac_base(record.ALT)
+            #    record.INFO['VariantType'] = 'Multiple_SNPs'
+            if len(record.ALT[0]) > 1 or len(record.REF) > 1:
                 record.INFO['VariantType'] = 'Indel'
             else:
-                record.INFO['VariantType'] = 'SNP'
+                if len(record.ALT) > 1:
+                    record.ALT = self.__gb.determine_iupac_base(record.ALT)
+                    record.INFO['VariantType'] = 'Ambiguous_SNP'
+                else:
+                    record.INFO['IsTransition'] = self.__gb.is_transition(
+                        str(record.REF), str(record.ALT[0])
+                    )
+                    record.INFO['VariantType'] = 'SNP'
+                    
                 if int(record.INFO['IsGenic']):
+                    
                     alt_base = str(record.ALT[0])
                     ref_base = str(record.REF)
-                    record.INFO['FlankingRegion'] = self.__gb.get_flanking_region(
-                        record.ALT[0], record.POS, self.length
-                    )
-                    
+
                     #Determine codon information
                     codon = self.__gb.codon_by_position(record.POS)
                     record.INFO['RefCodon'] = codon[0]
                     record.INFO['SNPCodonPosition'] = codon[1]
                     record.INFO['CodonPosition'] = codon[2]
                     
-                    # Adjust for negative strand
+                    # Adjust for ambiguous base and negative strand.
+                    
+                    
                     if feature.strand == -1:
-                        alt_base = str(Seq(str(record.ALT[0])).complement())
-                        record.INFO['FlankingRegion'] = Seq(record.INFO['FlankingRegion']).reverse_complement()
+                        alt_base = str(
+                            Seq(alt_base, IUPAC.ambiguous_dna).complement()
+                        )
+
                         record.INFO['Comments'] = 'Negative {0} -> {1}'.format(
                             Seq(record.REF).complement(), 
-                            Seq(str(record.ALT[0])).complement()
+                            alt_base
                         )
-                        
+
                     # Determine alternates
                     record.INFO['AltCodon'] = list(record.INFO['RefCodon'])
                     record.INFO['AltCodon'][record.INFO['SNPCodonPosition']] = alt_base
                     record.INFO['AltCodon'] = ''.join(record.INFO['AltCodon'])
                     record.INFO['RefAminoAcid'] = record.INFO['RefCodon'].translate()
-                    record.INFO['AltAminoAcid'] = Seq(record.INFO['AltCodon']).translate()
+                    record.INFO['AltAminoAcid'] = Seq(
+                        record.INFO['AltCodon'], 
+                        IUPAC.ambiguous_dna
+                    ).translate()
                     record.INFO['AminoAcidChange'] = '{0}{1}{2}'.format(
                         str(record.INFO['RefAminoAcid']),
                         record.INFO['CodonPosition'],
                         str(record.INFO['AltAminoAcid'])
                     )
                     
-                    if str(record.INFO['RefAminoAcid']) == str(record.INFO['AltAminoAcid']):
-                        record.INFO['Substitution'] = 'SYN'
-                    else:
-                        record.INFO['Substitution'] = 'nSYN'
+                    if record.INFO['VariantType'] != 'Ambiguous_SNP':
+                        ref = str(record.INFO['RefAminoAcid']) 
+                        alt = str(record.INFO['AltAminoAcid'])
+                        if ref == alt:
+                            record.INFO['IsSynonymous'] = 1
+                        else:
+                            record.INFO['IsSynonymous'] = 0
                         
     def write_vcf(self):
         self.__vcf.write_vcf()

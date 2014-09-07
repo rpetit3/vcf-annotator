@@ -55,16 +55,40 @@ class GenBank(object):
     def base_by_pos(self, pos):
         print self.__gb.seq[pos-1]
         
-    def get_flanking_region(self, alt_base, pos, length):
-        
-        genome_length = len(self.__gb.seq)
-        start = pos-length-1
-        end = pos+length
-        start = 0 if start < 0 else start
-        end = genome_length if end > genome_length else end
-        return '{0}{1}{2}'.format(
-            self.__gb.seq[start:pos-1],
-            str(alt_base).lower(),
-            self.__gb.seq[pos:end]
-        )
+    def determine_iupac_base(self, bases):
+        '''
+            Determine the IUPAC symbol for a list of nucleotides.
+            Source: https://en.wikipedia.org/wiki/Nucleic_acid_notation
+            List elements are in this order: [A,C,G,T]
+        '''
+        if len(bases) > 1:
+            iupac_notation = {
+                'W':[True, False, False, True],
+                'S':[False, True, True, False],
+                'M':[True, True, False, False],
+                'K':[False, False, True, True],
+                'R':[True, False, True, False],
+                'Y':[False, True, False, True],
+                'B':[False, True, True, True],
+                'D':[True, False, True, True],
+                'H':[True, True, False, True],
+                'V':[True, True, True, False],
+                'N':[False, False, False, False]
+            }
+                        
+            base_condition = [base in bases for base in ['A', 'C', 'G', 'T']]
+            for symbol, iupac_condition in iupac_notation.items():
+                if iupac_condition == base_condition:
+                    return symbol
 
+    def is_transition(self, ref_base, alt_base):
+        '''
+            1: Transition, 0:Transversion
+        '''
+        substitution = ref_base + alt_base
+        transition = ['AG', 'GA', 'CT', 'TC']
+
+        if substitution in transition:
+            return 1
+        else:   
+            return 0
