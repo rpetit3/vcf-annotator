@@ -75,7 +75,9 @@ class Annotator(object):
             #if len(record.ALT) > 1:
             #    self.__gb.determine_iupac_base(record.ALT)
             #    record.INFO['VariantType'] = 'Multiple_SNPs'
-            if len(record.ALT[0]) > 1 or len(record.REF) > 1:
+            if record.ALT[0] is None:
+                record.INFO['VariantType'] = 'Indel'
+            elif len(record.ALT[0]) > 1 or len(record.REF) > 1:
                 record.INFO['VariantType'] = 'Indel'
             else:
                 if len(record.ALT) > 1:
