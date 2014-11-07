@@ -2,5 +2,4 @@ VCF annotator written in Python. Reads a VCF file and annotates the variants acc
 
 Requires [PyVCF](https://github.com/jamescasbon/PyVCF) and [BioPython](http://biopython.org/)
 
-Just a test edit
   
