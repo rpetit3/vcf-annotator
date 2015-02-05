@@ -83,7 +83,7 @@ class Annotator(object):
                     record.ALT = self.__gb.determine_iupac_base(record.ALT)
                     record.INFO['VariantType'] = 'Ambiguous_SNP'
                 else:
-                    record.INFO['IsTransition'] = record.is_transition
+                    record.INFO['IsTransition'] = 1 if record.is_transition else 0
                     record.INFO['VariantType'] = 'SNP'
 
                 if int(record.INFO['IsGenic']):
