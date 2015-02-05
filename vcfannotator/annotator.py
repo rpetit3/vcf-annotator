@@ -70,9 +70,9 @@ class Annotator(object):
                 for k, v in qualifiers.items():
                     if v in feature.qualifiers:
                         # Product and Note, can contain ; which is delimiter
-                        # for the INFO column, replace it with a .
-                        record.INFO[k] = feature.qualifiers[v].replace(
-                            ';', '.'
+                        # for the INFO column, replace it with a ,
+                        record.INFO[k] = feature.qualifiers[v][0].replace(
+                            ';', ','
                         )
 
             # Determine variant type
