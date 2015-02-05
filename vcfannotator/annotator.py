@@ -107,7 +107,7 @@ class Annotator(object):
                             Seq(alt_base, IUPAC.ambiguous_dna).complement()
                         )
 
-                        record.INFO['Comments'] = 'Negative {0} -> {1}'.format(
+                        record.INFO['Comments'] = 'Negative:{0}->{1}'.format(
                             Seq(record.REF).complement(),
                             alt_base
                         )
