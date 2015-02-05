@@ -2,7 +2,6 @@ from vcfannotator import genbank
 from vcfannotator import vcftools
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
-import vcf
 
 
 class Annotator(object):
@@ -70,7 +69,11 @@ class Annotator(object):
                 }
                 for k, v in qualifiers.items():
                     if v in feature.qualifiers:
-                        record.INFO[k] = feature.qualifiers[v]
+                        # Product and Note, can contain ; which is delimiter
+                        # for the INFO column, replace it with a .
+                        record.INFO[k] = feature.qualifiers[v].replace(
+                            ';', '.'
+                        )
 
             # Determine variant type
             if record.is_indel:
@@ -88,7 +91,6 @@ class Annotator(object):
 
                 if int(record.INFO['IsGenic']):
                     alt_base = str(record.ALT[0])
-                    ref_base = str(record.REF)
 
                     # Determine codon information
                     codon = self.__gb.codon_by_position(record.POS)
