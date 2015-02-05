@@ -69,10 +69,13 @@ class Annotator(object):
                 }
                 for k, v in qualifiers.items():
                     if v in feature.qualifiers:
-                        # Product and Note, can contain ; which is delimiter
-                        # for the INFO column, replace it with a ,
+                        # Spell out semi-colons, commas and spaces
                         record.INFO[k] = feature.qualifiers[v][0].replace(
-                            ';', ','
+                            ';', '[semi-colon]'
+                        ).replace(
+                            ',', '[comma]'
+                        ).replace(
+                            ' ', '[space]'
                         )
 
             # Determine variant type
