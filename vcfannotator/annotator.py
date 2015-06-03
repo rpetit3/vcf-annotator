@@ -135,5 +135,5 @@ class Annotator(object):
                         else:
                             record.INFO['IsSynonymous'] = 0
 
-    def write_vcf(self):
-        self.__vcf.write_vcf()
+    def write_vcf(self, output='/dev/stdout'):
+        self.__vcf.write_vcf(output)
