@@ -17,7 +17,7 @@ if __name__ == '__main__':
                              "reference genome's GenBank file."])
     )
     group1 = parser.add_argument_group('Options', '')
-    group1.add_argument('--output', metavar="STRING", type=str, required=True, 
+    group1.add_argument('--output', metavar="STRING", type=str, 
                         default='/dev/stdout',
                         help='File to write VCF output to (Default STDOUT).')
     group1.add_argument('--gb', metavar="STRING", type=str, required=True,
