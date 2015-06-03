@@ -1,4 +1,5 @@
 from Bio import SeqIO
+from Bio.Seq import Seq
 
 
 class GenBank(object):
@@ -8,16 +9,16 @@ class GenBank(object):
         self.feature = None
         self.build_position_index()
         self.gene_codons = {}
-        
+
     @property
     def index(self):
         return self._index
-    
+
     @index.setter
     def index(self, value):
-        self._index = self.__position_index[value-1]
+        self._index = self.__position_index[value - 1]
         self.__set_feature()
-        
+
     def build_position_index(self):
         self.__position_index = [None] * len(self.__gb.seq)
         for i in xrange(len(self.__gb.features)):
@@ -25,7 +26,7 @@ class GenBank(object):
                 start = int(self.__gb.features[i].location.start)
                 end = int(self.__gb.features[i].location.end)
                 self.__position_index[start:end] = [i] * (end - start)
-                
+
     def __set_feature(self):
         if self._index is None:
             self.feature_exists = False
@@ -34,27 +35,36 @@ class GenBank(object):
             self.feature_exists = True
             self.feature = self.__gb.features[self._index]
 
-    def codon_by_position(self, pos): 
-        if self._index not in self.gene_codons: self.split_into_codons()   
-        gene_position = self.position_in_gene(pos)        
-        codon_position = gene_position/3
-        return [self.gene_codons[self._index][codon_position], gene_position%3, codon_position+1]
-        
+    def codon_by_position(self, pos):
+        if self._index not in self.gene_codons:
+            self.split_into_codons()
+        gene_position = self.position_in_gene(pos)
+        codon_position = gene_position / 3
+        return [self.gene_codons[self._index][codon_position],
+                gene_position % 3,
+                codon_position + 1]
+
     def split_into_codons(self):
-        seq = self.__gb.seq[self.feature.location.start:self.feature.location.end]
+        start = self.feature.location.start
+        end = self.feature.location.end
+        seq = ''.join(list(self.__gb.seq[start:end]))
+
         if self.feature.strand == -1:
-            seq = seq.reverse_complement()
-        self.gene_codons[self._index] = [seq[i:i+3] for i in range(0,len(seq),3)]
-            
+            seq = Seq(seq).reverse_complement()
+
+        self.gene_codons[self._index] = [
+            seq[i:i + 3] for i in range(0, len(seq), 3)
+        ]
+
     def position_in_gene(self, pos):
         if self.feature.strand == 1:
-            return pos-self.feature.location.start-1
+            return pos - self.feature.location.start - 1
         else:
-            return self.feature.location.end-pos
-        
+            return self.feature.location.end - pos
+
     def base_by_pos(self, pos):
-        print self.__gb.seq[pos-1]
-        
+        print self.__gb.seq[pos - 1]
+
     def determine_iupac_base(self, bases):
         '''
             Determine the IUPAC symbol for a list of nucleotides.
@@ -63,19 +73,19 @@ class GenBank(object):
         '''
         if len(bases) > 1:
             iupac_notation = {
-                'W':[True, False, False, True],
-                'S':[False, True, True, False],
-                'M':[True, True, False, False],
-                'K':[False, False, True, True],
-                'R':[True, False, True, False],
-                'Y':[False, True, False, True],
-                'B':[False, True, True, True],
-                'D':[True, False, True, True],
-                'H':[True, True, False, True],
-                'V':[True, True, True, False],
-                'N':[False, False, False, False]
+                'W': [True, False, False, True],
+                'S': [False, True, True, False],
+                'M': [True, True, False, False],
+                'K': [False, False, True, True],
+                'R': [True, False, True, False],
+                'Y': [False, True, False, True],
+                'B': [False, True, True, True],
+                'D': [True, False, True, True],
+                'H': [True, True, False, True],
+                'V': [True, True, True, False],
+                'N': [False, False, False, False]
             }
-                        
+
             base_condition = [base in bases for base in ['A', 'C', 'G', 'T']]
             for symbol, iupac_condition in iupac_notation.items():
                 if iupac_condition == base_condition:
@@ -90,5 +100,5 @@ class GenBank(object):
 
         if substitution in transition:
             return 1
-        else:   
+        else:
             return 0

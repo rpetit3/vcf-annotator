@@ -1,7 +1,6 @@
 from vcfannotator import genbank
 from vcfannotator import vcftools
 from Bio.Seq import Seq
-from Bio.Alphabet import IUPAC
 
 
 class Annotator(object):
@@ -97,14 +96,14 @@ class Annotator(object):
 
                     # Determine codon information
                     codon = self.__gb.codon_by_position(record.POS)
-                    record.INFO['RefCodon'] = codon[0]
+                    record.INFO['RefCodon'] = ''.join(list(codon[0]))
                     record.INFO['SNPCodonPosition'] = codon[1]
                     record.INFO['CodonPosition'] = codon[2]
 
                     # Adjust for ambiguous base and negative strand.
                     if feature.strand == -1:
                         alt_base = str(
-                            Seq(alt_base, IUPAC.ambiguous_dna).complement()
+                            Seq(alt_base).complement()
                         )
 
                         record.INFO['Comments'] = 'Negative:{0}->{1}'.format(
@@ -116,10 +115,11 @@ class Annotator(object):
                     record.INFO['AltCodon'] = list(record.INFO['RefCodon'])
                     record.INFO['AltCodon'][record.INFO['SNPCodonPosition']] = alt_base
                     record.INFO['AltCodon'] = ''.join(record.INFO['AltCodon'])
-                    record.INFO['RefAminoAcid'] = record.INFO['RefCodon'].translate()
+                    record.INFO['RefAminoAcid'] = Seq(
+                        record.INFO['RefCodon']
+                    ).translate()
                     record.INFO['AltAminoAcid'] = Seq(
-                        record.INFO['AltCodon'],
-                        IUPAC.ambiguous_dna
+                        record.INFO['AltCodon']
                     ).translate()
                     record.INFO['AminoAcidChange'] = '{0}{1}{2}'.format(
                         str(record.INFO['RefAminoAcid']),

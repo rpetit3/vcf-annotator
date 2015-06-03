@@ -1,16 +1,17 @@
 import collections
 import vcf
 
+
 class VCFTools(object):
     def __init__(self, vcf_file):
         self.reader = vcf.Reader(open(vcf_file, 'r'))
         self.records = [record for record in self.reader]
-        
+
     def add_information_fields(self, info_list):
         for i in info_list:
             id, num, type, desc = i
             self.__add_information_field(id, num, type, desc)
-            
+
     def __add_information_field(self, id, num, type, desc):
         _Info = collections.namedtuple('Info', ['id', 'num', 'type', 'desc'])
         if id:
