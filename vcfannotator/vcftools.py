@@ -17,7 +17,7 @@ class VCFTools(object):
         if id:
             self.reader.infos[id] = _Info(id, num, type, desc)
 
-    def write_vcf(self):
-        vcf_writer = vcf.Writer(open('/dev/stdout', 'w'), self.reader)
+    def write_vcf(self, output='/dev/stdout'):
+        vcf_writer = vcf.Writer(open(output, 'w'), self.reader)
         for record in self.records:
             vcf_writer.write_record(record)
