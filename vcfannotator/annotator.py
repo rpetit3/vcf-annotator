@@ -60,11 +60,13 @@ class Annotator(object):
             # Get annotation info
             if self.__gb.feature_exists:
                 feature = self.__gb.feature
-                record.INFO['IsGenic'] = '1'
+                if feature.type == "CDS":
+                    record.INFO['IsGenic'] = '1'
+
                 qualifiers = {
                     'Note': 'note', 'LocusTag': 'locus_tag',
-                    'DBXref': 'db_xref', 'Gene': 'gene', 'Product':
-                    'product', 'ProteinID': 'protein_id'
+                    'Gene': 'gene', 'Product': 'product', 
+                    'ProteinID': 'protein_id'
                 }
                 for k, v in qualifiers.items():
                     if v in feature.qualifiers:
