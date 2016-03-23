@@ -7,6 +7,7 @@ class GenBank(object):
         self.__gb = SeqIO.read(open(gb, 'r'), 'genbank')
         self._index = None
         self.feature = None
+        self.features = ["CDS", "rRNA", "tRNA"]
         self.build_position_index()
         self.gene_codons = {}
 
@@ -22,7 +23,7 @@ class GenBank(object):
     def build_position_index(self):
         self.__position_index = [None] * len(self.__gb.seq)
         for i in xrange(len(self.__gb.features)):
-            if self.__gb.features[i].type == "CDS":
+            if self.__gb.features[i].type in self.features:
                 start = int(self.__gb.features[i].location.start)
                 end = int(self.__gb.features[i].location.end)
                 self.__position_index[start:end] = [i] * (end - start)
