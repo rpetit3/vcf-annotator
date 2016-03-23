@@ -10,18 +10,17 @@ if __name__ == '__main__':
     parser = ap.ArgumentParser(
         prog='vcf-annotator.py',
         conflict_handler='resolve',
-        description="".join(["Annotate SNPs from a VCF file using the ",
-                             "reference genome's GenBank file."])
+        description=("Annotate SNPs from a VCF file using the reference "
+                     "genome's GenBank file.")
     )
-    group1 = parser.add_argument_group('Options', '')
-    group1.add_argument('gb', metavar="GENBANK_FILE", type=str,
-                        help='GenBank file of the reference genome.')
-    group1.add_argument('vcf', metavar="VCF_FILE", type=str,
+    parser.add_argument('vcf', metavar="VCF_FILE", type=str,
                         help='VCF file of SNPs')
-    group1.add_argument('--output', metavar="STRING", type=str,
+    parser.add_argument('gb', metavar="GENBANK_FILE", type=str,
+                        help='GenBank file of the reference genome.')
+    parser.add_argument('--output', metavar="STRING", type=str,
                         default='/dev/stdout',
                         help='File to write VCF output to (Default STDOUT).')
-    group1.add_argument('-h', '--help', action='help',
+    parser.add_argument('-h', '--help', action='help',
                         help='Show this help message and exit')
 
     if len(sys.argv) == 1:

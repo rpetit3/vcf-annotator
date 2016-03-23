@@ -7,9 +7,8 @@ from Bio.Seq import Seq
 class Annotator(object):
     """Annotator class."""
 
-    def __init__(self, gb_file=False, vcf_file=False, length=15):
+    def __init__(self, gb_file=False, vcf_file=False):
         """Initialize variables."""
-        self.length = length
         self.__annotated_features = ["CDS", "tRNA", "rRNA", "ncRNA",
                                      "misc_feature"]
         self.__gb = genbank.GenBank(gb_file)
@@ -94,6 +93,10 @@ class Annotator(object):
                             ).replace(
                                 ' ', '[space]'
                             )
+                            if v == 'anticodon':
+                                record.INFO[k] = 'anticodon{0}'.format(
+                                    record.INFO[k]
+                                )
 
             # Determine variant type
             if record.is_indel:
