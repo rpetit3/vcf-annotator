@@ -1,52 +1,44 @@
 #! /usr/bin/env python
-'''
-
-
-'''
+"""Annotate a given VCF file according to the given reference GenBank file."""
 
 if __name__ == '__main__':
     import argparse as ap
     import os
     import sys
     from vcfannotator import annotator
-    
+
     parser = ap.ArgumentParser(
-        prog='vcf-annotator.py', 
-        conflict_handler='resolve', 
+        prog='vcf-annotator.py',
+        conflict_handler='resolve',
         description="".join(["Annotate SNPs from a VCF file using the ",
                              "reference genome's GenBank file."])
     )
     group1 = parser.add_argument_group('Options', '')
-    group1.add_argument('--output', metavar="STRING", type=str, 
+    group1.add_argument('gb', metavar="GENBANK_FILE", type=str,
+                        help='GenBank file of the reference genome.')
+    group1.add_argument('vcf', metavar="VCF_FILE", type=str,
+                        help='VCF file of SNPs')
+    group1.add_argument('--output', metavar="STRING", type=str,
                         default='/dev/stdout',
                         help='File to write VCF output to (Default STDOUT).')
-    group1.add_argument('--gb', metavar="STRING", type=str, required=True,
-                        help='GenBank file of the reference genome.')
-    group1.add_argument('--vcf', metavar="STRING", type=str, required=True,
-                        help='VCF file of SNPs')
-    group1.add_argument(
-        '--length', metavar="INT", type=int, default=15,
-        help='Upstream and downstream length to return. (Default 15bp)'
-    )
-    group1.add_argument('-h', '--help', action='help', 
+    group1.add_argument('-h', '--help', action='help',
                         help='Show this help message and exit')
-   
-    if len(sys.argv)==1:
+
+    if len(sys.argv) == 1:
         parser.print_usage()
         sys.exit(1)
-        
-    args = parser.parse_args()  
+
+    args = parser.parse_args()
     # Verify input exists
     if not os.path.isfile(args.gb):
-        print 'Unable to locate GenBank file: {0}'.format(args.gb)
+        print('Unable to locate GenBank file: {0}'.format(args.gb))
         parser.print_usage()
         sys.exit(2)
     elif not os.path.isfile(args.vcf):
-        print 'Unable to locate VCF file: {0}'.format(args.vcf)
+        print('Unable to locate VCF file: {0}'.format(args.vcf))
         parser.print_usage()
         sys.exit(1)
-    
-    annotator = annotator.Annotator(gb_file=args.gb, vcf_file=args.vcf, 
-                                    length=args.length)
+
+    annotator = annotator.Annotator(gb_file=args.gb, vcf_file=args.vcf)
     annotator.annotate_vcf_records()
     annotator.write_vcf(args.output)

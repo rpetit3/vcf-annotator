@@ -1,17 +1,23 @@
+"""Annotate a given VCF file according to the reference GenBank."""
 from vcfannotator import genbank
 from vcfannotator import vcftools
 from Bio.Seq import Seq
 
 
 class Annotator(object):
+    """Annotator class."""
+
     def __init__(self, gb_file=False, vcf_file=False, length=15):
+        """Initialize variables."""
         self.length = length
-        self.__annotated_features = ["CDS", "tRNA", "rRNA", "ncRNA", "misc_feature"]
+        self.__annotated_features = ["CDS", "tRNA", "rRNA", "ncRNA",
+                                     "misc_feature"]
         self.__gb = genbank.GenBank(gb_file)
         self.__vcf = vcftools.VCFTools(vcf_file)
         self.add_annotation_info()
 
     def add_annotation_info(self):
+        """Add custom VCF info fields."""
         self.__vcf.add_information_fields([
             ['RefCodon', None, 'String', 'Reference codon'],
             ['AltCodon', None, 'String', 'Alternate codon'],
@@ -28,15 +34,16 @@ class Annotator(object):
             ['LocusTag', None, 'String', 'Locus tag associated with gene'],
             ['Gene', None, 'String', 'Name of gene'],
             ['Note', None, 'String', 'Note associated with gene'],
-            ['Inference', None, 'String', 'Note associated inference of feature.'],
+            ['Inference', None, 'String', 'Inference of feature.'],
             ['Product', None, 'String', 'Description of gene'],
             ['ProteinID', None, 'String', 'Protein ID of gene'],
             ['Comments', None, 'String', 'Example: Negative strand: T->C'],
             ['VariantType', None, 'String', 'Indel, SNP, Ambiguous_SNP'],
-            ['FeatureType', None, 'String', 'The feature type of the variant.'],
+            ['FeatureType', None, 'String', 'The feature type of variant.'],
         ])
 
     def annotate_vcf_records(self):
+        """Annotate each record in the VCF acording to the input GenBank."""
         for record in self.__vcf.records:
             self.__gb.index = record.POS
 
@@ -67,14 +74,14 @@ class Annotator(object):
                     feature = self.__gb.feature
                     if feature.type == "CDS":
                         record.INFO['IsGenic'] = '1'
-    
+
                     qualifiers = {
                         'Note': 'note', 'LocusTag': 'locus_tag',
-                        'Gene': 'gene', 'Product': 'product', 
+                        'Gene': 'gene', 'Product': 'product',
                         'ProteinID': 'protein_id',
                         'Inference': 'inference'
                     }
-                    
+
                     if feature.type == "tRNA":
                         qualifiers['Note'] = 'anticodon'
                     for k, v in qualifiers.items():
@@ -99,7 +106,10 @@ class Annotator(object):
                     record.ALT = self.__gb.determine_iupac_base(record.ALT)
                     record.INFO['VariantType'] = 'Ambiguous_SNP'
                 else:
-                    record.INFO['IsTransition'] = 1 if record.is_transition else 0
+                    if record.is_transition:
+                        record.INFO['IsTransition'] = 1
+                    else:
+                        record.INFO['IsTransition'] = 0
                     record.INFO['VariantType'] = 'SNP'
 
                 if int(record.INFO['IsGenic']):
@@ -124,7 +134,9 @@ class Annotator(object):
 
                     # Determine alternates
                     record.INFO['AltCodon'] = list(record.INFO['RefCodon'])
-                    record.INFO['AltCodon'][record.INFO['SNPCodonPosition']] = alt_base
+                    record.INFO['AltCodon'][
+                        record.INFO['SNPCodonPosition']
+                    ] = alt_base
                     record.INFO['AltCodon'] = ''.join(record.INFO['AltCodon'])
                     record.INFO['RefAminoAcid'] = Seq(
                         record.INFO['RefCodon']
@@ -147,4 +159,5 @@ class Annotator(object):
                             record.INFO['IsSynonymous'] = 0
 
     def write_vcf(self, output='/dev/stdout'):
+        """Write the VCF to the specified output."""
         self.__vcf.write_vcf(output)

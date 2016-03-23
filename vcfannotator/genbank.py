@@ -1,18 +1,24 @@
+"""Parse a reference GenBank file."""
 from Bio import SeqIO
 from Bio.Seq import Seq
 
 
 class GenBank(object):
+    """A class for parsing GenBank files."""
+
     def __init__(self, gb=False):
+        """Inititalize variables."""
         self.__gb = SeqIO.read(open(gb, 'r'), 'genbank')
         self._index = None
         self.feature = None
-        self.features = ["CDS", "rRNA", "tRNA", "ncRNA", "repeat_region", "misc_feature"]
+        self.features = ["CDS", "rRNA", "tRNA", "ncRNA", "repeat_region",
+                         "misc_feature"]
         self.build_position_index()
         self.gene_codons = {}
 
     @property
     def index(self):
+        """Postion index for features."""
         return self._index
 
     @index.setter
@@ -21,6 +27,7 @@ class GenBank(object):
         self.__set_feature()
 
     def build_position_index(self):
+        """Create a index for feature by position."""
         self.__position_index = [None] * len(self.__gb.seq)
         for i in xrange(len(self.__gb.features)):
             if self.__gb.features[i].type in self.features:
@@ -37,6 +44,7 @@ class GenBank(object):
             self.feature = self.__gb.features[self._index]
 
     def codon_by_position(self, pos):
+        """Retreive the codon given a postion of a CDS feature."""
         if self._index not in self.gene_codons:
             self.split_into_codons()
         gene_position = self.position_in_gene(pos)
@@ -46,6 +54,7 @@ class GenBank(object):
                 codon_position + 1]
 
     def split_into_codons(self):
+        """Split the complete CDS feature in to a list of codons."""
         start = self.feature.location.start
         end = self.feature.location.end
         seq = ''.join(list(self.__gb.seq[start:end]))
@@ -58,20 +67,23 @@ class GenBank(object):
         ]
 
     def position_in_gene(self, pos):
+        """Return a codon postion in a gene."""
         if self.feature.strand == 1:
             return pos - self.feature.location.start - 1
         else:
             return self.feature.location.end - pos
 
     def base_by_pos(self, pos):
-        print self.__gb.seq[pos - 1]
+        """Print the base by position."""
+        print(self.__gb.seq[pos - 1])
 
     def determine_iupac_base(self, bases):
-        '''
-            Determine the IUPAC symbol for a list of nucleotides.
-            Source: https://en.wikipedia.org/wiki/Nucleic_acid_notation
-            List elements are in this order: [A,C,G,T]
-        '''
+        """
+        Determine the IUPAC symbol for a list of nucleotides.
+
+        Source: https://en.wikipedia.org/wiki/Nucleic_acid_notation
+        List elements are in this order: [A,C,G,T]
+        """
         if len(bases) > 1:
             iupac_notation = {
                 'W': [True, False, False, True],
@@ -93,9 +105,11 @@ class GenBank(object):
                     return symbol
 
     def is_transition(self, ref_base, alt_base):
-        '''
-            1: Transition, 0:Transversion
-        '''
+        """
+        Identify SNP as being a transition or not.
+
+        1: Transition, 0:Transversion
+        """
         substitution = ref_base + alt_base
         transition = ['AG', 'GA', 'CT', 'TC']
 
