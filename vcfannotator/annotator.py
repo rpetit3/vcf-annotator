@@ -6,6 +6,7 @@ from Bio.Seq import Seq
 class Annotator(object):
     def __init__(self, gb_file=False, vcf_file=False, length=15):
         self.length = length
+        self.__annotated_features = ["CDS", "tRNA", "rRNA", "ncRNA", "misc_feature"]
         self.__gb = genbank.GenBank(gb_file)
         self.__vcf = vcftools.VCFTools(vcf_file)
         self.add_annotation_info()
@@ -25,13 +26,14 @@ class Annotator(object):
              '0:transversion, 1:transition, 9:N/A or Unknown'],
             ['IsGenic', '1', 'Integer', '0:intergenic, 1:genic'],
             ['LocusTag', None, 'String', 'Locus tag associated with gene'],
-            ['DBXref', None, 'String', 'Database ids associated with gene'],
             ['Gene', None, 'String', 'Name of gene'],
             ['Note', None, 'String', 'Note associated with gene'],
+            ['Inference', None, 'String', 'Note associated inference of feature.'],
             ['Product', None, 'String', 'Description of gene'],
             ['ProteinID', None, 'String', 'Protein ID of gene'],
             ['Comments', None, 'String', 'Example: Negative strand: T->C'],
             ['VariantType', None, 'String', 'Indel, SNP, Ambiguous_SNP'],
+            ['FeatureType', None, 'String', 'The feature type of the variant.'],
         ])
 
     def annotate_vcf_records(self):
@@ -51,33 +53,40 @@ class Annotator(object):
             record.INFO['Comments'] = '.'
             record.INFO['IsGenic'] = '0'
             record.INFO['LocusTag'] = '.'
-            record.INFO['DBXref'] = '.'
             record.INFO['Gene'] = '.'
             record.INFO['Note'] = '.'
+            record.INFO['Inference'] = '.'
             record.INFO['Product'] = '.'
             record.INFO['ProteinID'] = '.'
+            record.INFO['FeatureType'] = 'inter_genic'
 
             # Get annotation info
             if self.__gb.feature_exists:
-                feature = self.__gb.feature
-                if feature.type == "CDS":
-                    record.INFO['IsGenic'] = '1'
-
-                qualifiers = {
-                    'Note': 'note', 'LocusTag': 'locus_tag',
-                    'Gene': 'gene', 'Product': 'product', 
-                    'ProteinID': 'protein_id'
-                }
-                for k, v in qualifiers.items():
-                    if v in feature.qualifiers:
-                        # Spell out semi-colons, commas and spaces
-                        record.INFO[k] = feature.qualifiers[v][0].replace(
-                            ';', '[semi-colon]'
-                        ).replace(
-                            ',', '[comma]'
-                        ).replace(
-                            ' ', '[space]'
-                        )
+                record.INFO['FeatureType'] = self.__gb.feature.type
+                if self.__gb.feature.type in self.__annotated_features:
+                    feature = self.__gb.feature
+                    if feature.type == "CDS":
+                        record.INFO['IsGenic'] = '1'
+    
+                    qualifiers = {
+                        'Note': 'note', 'LocusTag': 'locus_tag',
+                        'Gene': 'gene', 'Product': 'product', 
+                        'ProteinID': 'protein_id',
+                        'Inference': 'inference'
+                    }
+                    
+                    if feature.type == "tRNA":
+                        qualifiers['Note'] = 'anticodon'
+                    for k, v in qualifiers.items():
+                        if v in feature.qualifiers:
+                            # Spell out semi-colons, commas and spaces
+                            record.INFO[k] = feature.qualifiers[v][0].replace(
+                                ';', '[semi-colon]'
+                            ).replace(
+                                ',', '[comma]'
+                            ).replace(
+                                ' ', '[space]'
+                            )
 
             # Determine variant type
             if record.is_indel:
