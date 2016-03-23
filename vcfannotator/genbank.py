@@ -7,7 +7,7 @@ class GenBank(object):
         self.__gb = SeqIO.read(open(gb, 'r'), 'genbank')
         self._index = None
         self.feature = None
-        self.features = ["CDS", "rRNA", "tRNA"]
+        self.features = ["CDS", "rRNA", "tRNA", "ncRNA", "repeat_region"]
         self.build_position_index()
         self.gene_codons = {}
 
