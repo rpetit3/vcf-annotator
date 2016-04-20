@@ -30,6 +30,7 @@ class Annotator(object):
             ['IsTransition', '1', 'Integer',
              '0:transversion, 1:transition, 9:N/A or Unknown'],
             ['IsGenic', '1', 'Integer', '0:intergenic, 1:genic'],
+            ['IsPseudo', '1', 'Integer', '0:not pseudo, 1:pseudo gene'],
             ['LocusTag', None, 'String', 'Locus tag associated with gene'],
             ['Gene', None, 'String', 'Name of gene'],
             ['Note', None, 'String', 'Note associated with gene'],
@@ -58,6 +59,7 @@ class Annotator(object):
             record.INFO['IsTransition'] = 9
             record.INFO['Comments'] = '.'
             record.INFO['IsGenic'] = '0'
+            record.INFO['IsPseudo'] = '0'
             record.INFO['LocusTag'] = '.'
             record.INFO['Gene'] = '.'
             record.INFO['Note'] = '.'
@@ -97,6 +99,9 @@ class Annotator(object):
                                 record.INFO[k] = 'anticodon{0}'.format(
                                     record.INFO[k]
                                 )
+
+                    if 'pseudo' in feature.qualifiers:
+                        record.INFO['IsPseudo'] = '1'
 
             # Determine variant type
             if record.is_indel:
