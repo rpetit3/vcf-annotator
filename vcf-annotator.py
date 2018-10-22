@@ -1,9 +1,26 @@
 #! /usr/bin/env python3
-"""Annotate a given VCF file according to the given reference GenBank file."""
+"""
+vcf-annotator.py [-h] [--output STRING] [--version] VCF_FILE GENBANK_FILE
+
+Annotate variants from a VCF file using the reference genome's GenBank file.
+
+positional arguments:
+  VCF_FILE         VCF file of Variants
+  GENBANK_FILE     GenBank file of the reference genome.
+
+optional arguments:
+  -h, --help       show this help message and exit
+  --output STRING  File to write VCF output to (Default STDOUT).
+  --version        show program's version number and exit
+
+Example Usage:
+./vcf-annotator.py example-data/example.vcf example-data/example.gb
+"""
 import collections
 from Bio import SeqIO
 from Bio.Seq import Seq
 import vcf
+VERSION = 0.5
 
 
 class Annotator(object):
@@ -285,8 +302,8 @@ class GenBank(object):
 
         if substitution in transition:
             return 1
-        else:
-            return 0
+
+        return 0
 
 
 class VCFTools(object):
@@ -324,7 +341,7 @@ if __name__ == '__main__':
     parser = ap.ArgumentParser(
         prog='vcf-annotator.py',
         conflict_handler='resolve',
-        description=("Annotate SNPs from a VCF file using the reference "
+        description=("Annotate variants from a VCF file using the reference "
                      "genome's GenBank file.")
     )
     parser.add_argument('vcf', metavar="VCF_FILE", type=str,
@@ -334,22 +351,20 @@ if __name__ == '__main__':
     parser.add_argument('--output', metavar="STRING", type=str,
                         default='/dev/stdout',
                         help='File to write VCF output to (Default STDOUT).')
-    parser.add_argument('-h', '--help', action='help',
-                        help='Show this help message and exit')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s {0}'.format(VERSION))
 
     if len(sys.argv) == 1:
-        parser.print_usage()
-        sys.exit(1)
+        parser.print_help()
+        sys.exit(0)
 
     args = parser.parse_args()
     # Verify input exists
     if not os.path.isfile(args.gb):
         print('Unable to locate GenBank file: {0}'.format(args.gb))
-        parser.print_usage()
-        sys.exit(2)
+        sys.exit(1)
     elif not os.path.isfile(args.vcf):
         print('Unable to locate VCF file: {0}'.format(args.vcf))
-        parser.print_usage()
         sys.exit(1)
 
     annotator = Annotator(gb_file=args.gb, vcf_file=args.vcf)
