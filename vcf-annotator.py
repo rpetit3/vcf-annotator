@@ -345,7 +345,7 @@ if __name__ == '__main__':
                      "genome's GenBank file.")
     )
     parser.add_argument('vcf', metavar="VCF_FILE", type=str,
-                        help='VCF file of SNPs')
+                        help='VCF file of variants')
     parser.add_argument('gb', metavar="GENBANK_FILE", type=str,
                         help='GenBank file of the reference genome.')
     parser.add_argument('--output', metavar="STRING", type=str,
