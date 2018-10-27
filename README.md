@@ -1,3 +1,5 @@
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io/recipes/vcf-annotator/README.html)
+
 *vcf-annotator* uses the reference GenBank file to add more details to the variant calls in a VCF.
 
 # vcf-annotator
