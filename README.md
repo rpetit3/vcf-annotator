@@ -35,8 +35,11 @@ For each mutation, if applicable, the following annotations are added to the INF
 * [BioPython](http://biopython.org/) >= 1.65 
 * [PyVCF](https://github.com/jamescasbon/PyVCF) == 0.6.8
 
-### Bioconda [TODO]
-Will be added shortly
+### Bioconda
+*vcf-annotator* is available from BioConda
+```
+conda install fastq-scan
+```
 
 ### From Source
 ```
