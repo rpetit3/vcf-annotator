@@ -38,7 +38,7 @@ For each mutation, if applicable, the following annotations are added to the INF
 ### Bioconda
 *vcf-annotator* is available from BioConda
 ```
-conda install fastq-scan
+conda install vcf-annotator
 ```
 
 ### From Source
