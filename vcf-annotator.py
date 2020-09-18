@@ -64,6 +64,7 @@ class Annotator(object):
     def annotate_vcf_records(self):
         """Annotate each record in the VCF acording to the input GenBank."""
         for record in self.__vcf.records:
+            self.__gb.accession = record.CHROM
             self.__gb.index = record.POS
 
             # Set defaults
@@ -195,13 +196,29 @@ class GenBank(object):
 
     def __init__(self, gb=False):
         """Inititalize variables."""
-        self.__gb = SeqIO.read(open(gb, 'r'), 'genbank')
+        self.genbank_file = gb
+        self.records = {}
+        self.record_index = {}
+        self.__gb = None
         self._index = None
+        self._accession = None
+        self.__position_index = None
         self.feature = None
         self.features = ["CDS", "rRNA", "tRNA", "ncRNA", "repeat_region",
                          "misc_feature"]
-        self.build_position_index()
         self.gene_codons = {}
+        self.parse_genbank()
+
+    @property
+    def accession(self):
+        """Accession for records."""
+        return self._index
+
+    @accession.setter
+    def accession(self, value):
+        self._accession = value
+        self.__gb = self.records[value]
+        self.__position_index = self.record_index[value]
 
     @property
     def index(self):
@@ -213,14 +230,17 @@ class GenBank(object):
         self._index = self.__position_index[value - 1]
         self.__set_feature()
 
-    def build_position_index(self):
-        """Create a index for feature by position."""
-        self.__position_index = [None] * len(self.__gb.seq)
-        for i in range(len(self.__gb.features)):
-            if self.__gb.features[i].type in self.features:
-                start = int(self.__gb.features[i].location.start)
-                end = int(self.__gb.features[i].location.end)
-                self.__position_index[start:end] = [i] * (end - start)
+    def parse_genbank(self):
+        with open(self.genbank_file, 'r') as gb_fh:
+            for record in SeqIO.parse(gb_fh, 'genbank'):
+                self.records[record.name] = record
+                self.gene_codons[record.name] = {}
+                self.record_index[record.name] = [None] * len(record.seq)
+                for i in range(len(record.features)):
+                    if record.features[i].type in self.features:
+                        start = int(record.features[i].location.start)
+                        end = int(record.features[i].location.end)
+                        self.record_index[record.name][start:end] = [i] * (end - start)
 
     def __set_feature(self):
         if self._index is None:
@@ -228,15 +248,15 @@ class GenBank(object):
             self.feature = None
         else:
             self.feature_exists = True
-            self.feature = self.__gb.features[self._index]
+            self.feature = self.records[self._accession].features[self._index]
 
     def codon_by_position(self, pos):
         """Retreive the codon given a postion of a CDS feature."""
-        if self._index not in self.gene_codons:
+        if self._index not in self.gene_codons[self._accession]:
             self.split_into_codons()
         gene_position = self.position_in_gene(pos)
         codon_position = gene_position // 3
-        return [self.gene_codons[self._index][codon_position],
+        return [self.gene_codons[self._accession][self._index][codon_position],
                 gene_position % 3,
                 codon_position + 1]
 
@@ -249,7 +269,7 @@ class GenBank(object):
         if self.feature.strand == -1:
             seq = Seq(seq).reverse_complement()
 
-        self.gene_codons[self._index] = [
+        self.gene_codons[self._accession][self._index] = [
             seq[i:i + 3] for i in range(0, len(seq), 3)
         ]
 
@@ -366,6 +386,8 @@ if __name__ == '__main__':
     elif not os.path.isfile(args.vcf):
         print('Unable to locate VCF file: {0}'.format(args.vcf))
         sys.exit(1)
+
+    
 
     annotator = Annotator(gb_file=args.gb, vcf_file=args.vcf)
     annotator.annotate_vcf_records()
