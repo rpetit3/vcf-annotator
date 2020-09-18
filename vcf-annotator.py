@@ -20,7 +20,7 @@ import collections
 from Bio import SeqIO
 from Bio.Seq import Seq
 import vcf
-VERSION = 0.5
+VERSION = 0.6
 
 
 class Annotator(object):
