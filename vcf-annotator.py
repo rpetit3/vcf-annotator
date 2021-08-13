@@ -65,6 +65,7 @@ class Annotator(object):
         """Annotate each record in the VCF acording to the input GenBank."""
         for record in self.__vcf.records:
             self.__gb.accession = record.CHROM
+            self.__gb.version = record.CHROM
             self.__gb.index = record.POS
 
             # Set defaults
@@ -199,6 +200,7 @@ class GenBank(object):
         self.genbank_file = gb
         self.records = {}
         self.record_index = {}
+        self.record_ids = {}
         self.__gb = None
         self._index = None
         self._accession = None
@@ -216,6 +218,9 @@ class GenBank(object):
 
     @accession.setter
     def accession(self, value):
+        if value not in self.records:
+            value = self.record_ids[value]
+
         self._accession = value
         self.__gb = self.records[value]
         self.__position_index = self.record_index[value]
@@ -236,6 +241,7 @@ class GenBank(object):
                 self.records[record.name] = record
                 self.gene_codons[record.name] = {}
                 self.record_index[record.name] = [None] * len(record.seq)
+                self.record_ids[record.id] = record.name
                 for i in range(len(record.features)):
                     if record.features[i].type in self.features:
                         start = int(record.features[i].location.start)
@@ -386,8 +392,6 @@ if __name__ == '__main__':
     elif not os.path.isfile(args.vcf):
         print('Unable to locate VCF file: {0}'.format(args.vcf))
         sys.exit(1)
-
-    
 
     annotator = Annotator(gb_file=args.gb, vcf_file=args.vcf)
     annotator.annotate_vcf_records()
