@@ -101,7 +101,7 @@ A VCF and GenBank file are included in the *example-data* directory. You can use
 files to verify the script is working properly.
 
 ```{bash}
-python3 vcf-annotator.py example-data/example.vcf example-data/example.gb
+python3 bin/vcf-annotator.py example-data/example.vcf example-data/example.gb
 ```
 
 ## Disclaimer
