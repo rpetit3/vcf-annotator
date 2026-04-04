@@ -1,2 +1,0 @@
-biopython==1.72
-PyVCF==0.6.8

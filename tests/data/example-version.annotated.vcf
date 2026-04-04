@@ -1,0 +1,42 @@
+##fileformat=VCFv4.1
+##INFO=<ID=RefCodon,Number=.,Type=String,Description="Reference codon">
+##INFO=<ID=AltCodon,Number=.,Type=String,Description="Alternate codon">
+##INFO=<ID=RefAminoAcid,Number=.,Type=String,Description="Reference amino acid">
+##INFO=<ID=AltAminoAcid,Number=.,Type=String,Description="Alternate amino acid">
+##INFO=<ID=CodonPosition,Number=1,Type=Integer,Description="Codon position in the gene">
+##INFO=<ID=SNPCodonPosition,Number=1,Type=Integer,Description="SNP position in the codon">
+##INFO=<ID=AminoAcidChange,Number=.,Type=String,Description="Amino acid change">
+##INFO=<ID=IsSynonymous,Number=1,Type=Integer,Description="0:nonsynonymous, 1:synonymous, 9:N/A or Unknown">
+##INFO=<ID=IsTransition,Number=1,Type=Integer,Description="0:transversion, 1:transition, 9:N/A or Unknown">
+##INFO=<ID=IsGenic,Number=1,Type=Integer,Description="0:intergenic, 1:genic">
+##INFO=<ID=IsPseudo,Number=1,Type=Integer,Description="0:not pseudo, 1:pseudo gene">
+##INFO=<ID=LocusTag,Number=.,Type=String,Description="Locus tag associated with gene">
+##INFO=<ID=Gene,Number=.,Type=String,Description="Name of gene">
+##INFO=<ID=Note,Number=.,Type=String,Description="Note associated with gene">
+##INFO=<ID=Inference,Number=.,Type=String,Description="Inference of feature.">
+##INFO=<ID=Product,Number=.,Type=String,Description="Description of gene">
+##INFO=<ID=ProteinID,Number=.,Type=String,Description="Protein ID of gene">
+##INFO=<ID=Comments,Number=.,Type=String,Description="Example: Negative strand: T->C">
+##INFO=<ID=VariantType,Number=.,Type=String,Description="Indel, SNP, Ambiguous_SNP">
+##INFO=<ID=FeatureType,Number=.,Type=String,Description="The feature type of variant.">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##contig=<ID=1,length=29903>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+NC_045512.2	25	.	T	G	.	.	RefCodon=.;AltCodon=.;RefAminoAcid=.;AltAminoAcid=.;CodonPosition=.;SNPCodonPosition=.;AminoAcidChange=.;IsSynonymous=9;IsTransition=0;IsGenic=0;IsPseudo=0;LocusTag=.;Gene=.;Note=.;Inference=.;Product=.;ProteinID=.;Comments=.;VariantType=SNP;FeatureType=inter_genic
+NC_045512.2	241	.	C	T	.	.	RefCodon=.;AltCodon=.;RefAminoAcid=.;AltAminoAcid=.;CodonPosition=.;SNPCodonPosition=.;AminoAcidChange=.;IsSynonymous=9;IsTransition=1;IsGenic=0;IsPseudo=0;LocusTag=.;Gene=.;Note=.;Inference=.;Product=.;ProteinID=.;Comments=.;VariantType=SNP;FeatureType=inter_genic
+NC_045512.2	512	.	C	T	.	.	RefCodon=CAT;AltCodon=TAT;RefAminoAcid=H;AltAminoAcid=Y;CodonPosition=83;SNPCodonPosition=0;AminoAcidChange=H83Y;IsSynonymous=0;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	514	.	T	C	.	.	RefCodon=CAT;AltCodon=CAC;RefAminoAcid=H;AltAminoAcid=H;CodonPosition=83;SNPCodonPosition=2;AminoAcidChange=H83H;IsSynonymous=1;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	520	.	G	T	.	.	RefCodon=ATG;AltCodon=ATT;RefAminoAcid=M;AltAminoAcid=I;CodonPosition=85;SNPCodonPosition=2;AminoAcidChange=M85I;IsSynonymous=0;IsTransition=0;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	521	.	G	T	.	.	RefCodon=GTT;AltCodon=TTT;RefAminoAcid=V;AltAminoAcid=F;CodonPosition=86;SNPCodonPosition=0;AminoAcidChange=V86F;IsSynonymous=0;IsTransition=0;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	710	.	C	T	.	.	RefCodon=CTT;AltCodon=TTT;RefAminoAcid=L;AltAminoAcid=F;CodonPosition=149;SNPCodonPosition=0;AminoAcidChange=L149F;IsSynonymous=0;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	734	.	T	C	.	.	RefCodon=TTT;AltCodon=CTT;RefAminoAcid=F;AltAminoAcid=L;CodonPosition=157;SNPCodonPosition=0;AminoAcidChange=F157L;IsSynonymous=0;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	739	.	A	G	.	.	RefCodon=CAA;AltCodon=CAG;RefAminoAcid=Q;AltAminoAcid=Q;CodonPosition=158;SNPCodonPosition=2;AminoAcidChange=Q158Q;IsSynonymous=1;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	745	.	C	A	.	.	RefCodon=AAC;AltCodon=AAA;RefAminoAcid=N;AltAminoAcid=K;CodonPosition=160;SNPCodonPosition=2;AminoAcidChange=N160K;IsSynonymous=0;IsTransition=0;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	784	.	C	T	.	.	RefCodon=CTC;AltCodon=CTT;RefAminoAcid=L;AltAminoAcid=L;CodonPosition=173;SNPCodonPosition=2;AminoAcidChange=L173L;IsSynonymous=1;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	832	.	C	T	.	.	RefCodon=AAC;AltCodon=AAT;RefAminoAcid=N;AltAminoAcid=N;CodonPosition=189;SNPCodonPosition=2;AminoAcidChange=N189N;IsSynonymous=1;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	835	.	C	T	.	.	RefCodon=TTC;AltCodon=TTT;RefAminoAcid=F;AltAminoAcid=F;CodonPosition=190;SNPCodonPosition=2;AminoAcidChange=F190F;IsSynonymous=1;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	875	.	C	T	.	.	RefCodon=CTT;AltCodon=TTT;RefAminoAcid=L;AltAminoAcid=F;CodonPosition=204;SNPCodonPosition=0;AminoAcidChange=L204F;IsSynonymous=0;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	878	.	C	T	.	.	RefCodon=CTA;AltCodon=TTA;RefAminoAcid=L;AltAminoAcid=L;CodonPosition=205;SNPCodonPosition=0;AminoAcidChange=L205L;IsSynonymous=1;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	894	.	A	G	.	.	RefCodon=AAA;AltCodon=AGA;RefAminoAcid=K;AltAminoAcid=R;CodonPosition=210;SNPCodonPosition=1;AminoAcidChange=K210R;IsSynonymous=0;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	913	.	C	T	.	.	RefCodon=TCC;AltCodon=TCT;RefAminoAcid=S;AltAminoAcid=S;CodonPosition=216;SNPCodonPosition=2;AminoAcidChange=S216S;IsSynonymous=1;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS
+NC_045512.2	960	.	G	A	.	.	RefCodon=CGT;AltCodon=CAT;RefAminoAcid=R;AltAminoAcid=H;CodonPosition=232;SNPCodonPosition=1;AminoAcidChange=R232H;IsSynonymous=0;IsTransition=1;IsGenic=1;IsPseudo=0;LocusTag=GU280_gp01;Gene=ORF1ab;Note=pp1a;Inference=.;Product=ORF1a[space]polyprotein;ProteinID=YP_009725295.1;Comments=.;VariantType=SNP;FeatureType=CDS

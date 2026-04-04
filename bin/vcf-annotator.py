@@ -17,10 +17,20 @@ Example Usage:
 ./vcf-annotator.py example-data/example.vcf example-data/example.gb
 """
 import collections
+import csv
 from Bio import SeqIO
 from Bio.Seq import Seq
 import vcf
-VERSION = 0.7
+
+# Workaround for PyVCF3 quotechar bug on Python 3.12+
+# See: https://github.com/dridk/PyVCF3/issues/13
+_csv_writer = csv.writer
+def _fixed_csv_writer(*args, **kwargs):
+    if kwargs.get('quotechar') == '':
+        kwargs['quotechar'] = None
+    return _csv_writer(*args, **kwargs)
+csv.writer = _fixed_csv_writer
+VERSION = '1.0.0'
 
 
 class Annotator(object):
@@ -28,8 +38,7 @@ class Annotator(object):
 
     def __init__(self, gb_file=False, vcf_file=False):
         """Initialize variables."""
-        self.__annotated_features = ["CDS", "tRNA", "rRNA", "ncRNA",
-                                     "misc_feature"]
+        self.__annotated_features = ["CDS", "tRNA", "rRNA", "ncRNA", "misc_feature"]
         self.__gb = GenBank(gb_file)
         self.__vcf = VCFTools(vcf_file)
         self.add_annotation_info()
@@ -44,10 +53,8 @@ class Annotator(object):
             ['CodonPosition', '1', 'Integer', 'Codon position in the gene'],
             ['SNPCodonPosition', '1', 'Integer', 'SNP position in the codon'],
             ['AminoAcidChange', None, 'String', 'Amino acid change'],
-            ['IsSynonymous', '1', 'Integer',
-             '0:nonsynonymous, 1:synonymous, 9:N/A or Unknown'],
-            ['IsTransition', '1', 'Integer',
-             '0:transversion, 1:transition, 9:N/A or Unknown'],
+            ['IsSynonymous', '1', 'Integer', '0:nonsynonymous, 1:synonymous, 9:N/A or Unknown'],
+            ['IsTransition', '1', 'Integer', '0:transversion, 1:transition, 9:N/A or Unknown'],
             ['IsGenic', '1', 'Integer', '0:intergenic, 1:genic'],
             ['IsPseudo', '1', 'Integer', '0:not pseudo, 1:pseudo gene'],
             ['LocusTag', None, 'String', 'Locus tag associated with gene'],
@@ -151,7 +158,7 @@ class Annotator(object):
                     record.INFO['CodonPosition'] = codon[2]
 
                     # Adjust for ambiguous base and negative strand.
-                    if feature.strand == -1:
+                    if feature.location.strand == -1:
                         alt_base = str(
                             Seq(alt_base).complement()
                         )
@@ -206,8 +213,7 @@ class GenBank(object):
         self._accession = None
         self.__position_index = None
         self.feature = None
-        self.features = ["CDS", "rRNA", "tRNA", "ncRNA", "repeat_region",
-                         "misc_feature"]
+        self.features = ["CDS", "rRNA", "tRNA", "ncRNA", "repeat_region", "misc_feature"]
         self.gene_codons = {}
         self.parse_genbank()
 
@@ -272,7 +278,7 @@ class GenBank(object):
         end = self.feature.location.end
         seq = ''.join(list(self.__gb.seq[start:end]))
 
-        if self.feature.strand == -1:
+        if self.feature.location.strand == -1:
             seq = Seq(seq).reverse_complement()
 
         self.gene_codons[self._accession][self._index] = [
@@ -281,7 +287,7 @@ class GenBank(object):
 
     def position_in_gene(self, pos):
         """Return a codon postion in a gene."""
-        if self.feature.strand == 1:
+        if self.feature.location.strand == 1:
             return pos - self.feature.location.start - 1
         else:
             return self.feature.location.end - pos
